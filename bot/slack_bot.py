@@ -1,80 +1,100 @@
+#!/usr/bin/env python
+
+import os
 import time
-import logging
-import traceback
+import random
+from slackclient import SlackClient
 
-from slack_clients import SlackClients
-from messenger import Messenger
-from event_handler import RtmEventHandler
+from beepboop import resourcer
+from beepboop import bot_manager
 
-logger = logging.getLogger(__name__)
-
-
-def spawn_bot():
-    return SlackBot()
+import urllib, json
 
 
-class SlackBot(object):
-    def __init__(self, token=None):
-        """Creates Slacker Web and RTM clients with API Bot User token.
+#playlists
+playlist = {}
+playlist["orangestar"] = "PLOXWDQbF5nQtflxUaCjx8w4VhpzPEAwHA"
+playlist["pinnochioP"]= "PLSf-HCzj7cOvFosWKZdPJBTXw9iBfBp95"
+playlist["deco*27"] = "PL6c6sPNdnX_UjsnvrQ_fssRHcon05f0Xd"
+playlist["nbuna"] = "PL1oNojz8YMGHI9HMU48hNI2uhWzGYIdqw"
 
-        Args:
-            token (str): Slack API Bot User token (for development token set in env)
-        """
-        self.last_ping = 0
-        self.keep_running = True
-        if token is not None:
-            self.clients = SlackClients(token)
 
-    def start(self, resource):
-        """Creates Slack Web and RTM clients for the given Resource
-        using the provided API tokens and configuration, then connects websocket
-        and listens for RTM events.
+BOT_ID = "U3MRXQ9CH"
 
-        Args:
-            resource (dict of Resource JSON): See message payloads - https://beepboophq.com/docs/article/resourcer-api
-        """
-        logger.debug('Starting bot for resource: {}'.format(resource))
-        if 'resource' in resource and 'SlackBotAccessToken' in resource['resource']:
-            res_access_token = resource['resource']['SlackBotAccessToken']
-            self.clients = SlackClients(res_access_token)
 
-        if self.clients.rtm.rtm_connect():
-            logging.info(u'Connected {} to {} team at https://{}.slack.com'.format(
-                self.clients.rtm.server.username,
-                self.clients.rtm.server.login_data['team']['name'],
-                self.clients.rtm.server.domain))
+# constants
+AT_BOT = "<@" + BOT_ID + ">"
+random_song = "song"
 
-            msg_writer = Messenger(self.clients)
-            event_handler = RtmEventHandler(self.clients, msg_writer)
+# instantiate Slack & Twilio clients
+print SLACK_TOKEN
+slack_client = SlackClient(SLACK_TOKEN)
 
-            while self.keep_running:
-                for event in self.clients.rtm.rtm_read():
-                    try:
-                        event_handler.handle(event)
-                    except:
-                        err_msg = traceback.format_exc()
-                        logging.error('Unexpected error: {}'.format(err_msg))
-                        msg_writer.write_error(event['channel'], err_msg)
-                        continue
+def handle_command(command, channel):
+    """
+        Receives commands directed at the bot and determines if they
+        are valid commands. If so, then acts on the commands. If not,
+        returns back what it needs for clarification.
+    """
 
-                self._auto_ping()
-                time.sleep(.1)
+    if command in playlist.keys():
+        inp = urllib.urlopen(r'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet%2CcontentDetails%2Cstatus&maxResults=50&playlistId='+playlist[command]+'&key=AIzaSyD7CsWp3uxChY6fpJzBf1fFlj4r7W6Wk9o')
+        resp = json.load(inp)
+        inp.close()
 
-        else:
-            logger.error('Failed to connect to RTM client with token: {}'.format(self.clients.token))
+        items = resp['items']
 
-    def _auto_ping(self):
-        # hard code the interval to 3 seconds
-        now = int(time.time())
-        if now > self.last_ping + 3:
-            self.clients.rtm.server.ping()
-            self.last_ping = now
+        rnd =  random.randint(0,len(items))
+        response = "https://www.youtube.com/watch?v=" +  items[rnd]["contentDetails"]["videoId"]
 
-    def stop(self, resource):
-        """Stop any polling loops on clients, clean up any resources,
-        close connections if possible.
 
-        Args:
-            resource (dict of Resource JSON): See message payloads - https://beepboophq.com/docs/article/resourcer-api
-        """
-        self.keep_running = False
+    elif command == random_song:
+        biglist = []
+        for list,addr in playlist.iteritems():
+            inp = urllib.urlopen(r'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet%2CcontentDetails%2Cstatus&maxResults=50&playlistId='+addr+'&key=AIzaSyD7CsWp3uxChY6fpJzBf1fFlj4r7W6Wk9o')
+            resp = json.load(inp)
+            inp.close()
+
+            items = resp['items']
+
+            for item in items:
+                biglist.append(item["contentDetails"]["videoId"])
+
+        rnd = random.randint(0,len(biglist))
+        response = "https://www.youtube.com/watch?v=" +  biglist[rnd]
+
+    else:
+        response = "invalid command"
+    slack_client.api_call("chat.postMessage", channel=channel, text=response, as_user=True)
+
+
+
+def parse_slack_output(slack_rtm_output):
+    """
+        The Slack Real Time Messaging API is an events firehose.
+        this parsing function returns None unless a message is
+        directed at the Bot, based on its ID.
+    """
+    output_list = slack_rtm_output
+    if output_list and len(output_list) > 0:
+        for output in output_list:
+            if output and 'text' in output and AT_BOT in output['text']:
+                # return text after the @ mention, whitespace removed
+                return output['text'].split(AT_BOT)[1].strip().lower(), \
+                       output['channel']
+    return None, None
+
+
+if __name__ == "__main__":
+    READ_WEBSOCKET_DELAY = 1 # 1 second delay between reading from firehose
+    if slack_client.rtm_connect():
+        print("StarterBot connected and running!")
+        while True:
+            command, channel = parse_slack_output(slack_client.rtm_read())
+            if command and channel:
+                handle_command(command, channel)
+            time.sleep(READ_WEBSOCKET_DELAY)
+    else:
+        print("Connection failed. Invalid Slack token or bot ID?")
+
+
