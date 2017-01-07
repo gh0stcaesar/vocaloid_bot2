@@ -19,7 +19,7 @@ playlist["deco*27"] = "PL6c6sPNdnX_UjsnvrQ_fssRHcon05f0Xd"
 playlist["nbuna"] = "PL1oNojz8YMGHI9HMU48hNI2uhWzGYIdqw"
 
 
-BOT_ID = "U3MRXQ9CH"
+BOT_ID = "U3NGTJX2P"
 
 
 # constants
