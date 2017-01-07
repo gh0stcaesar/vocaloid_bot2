@@ -50,7 +50,7 @@ def handle_command(command, channel):
 
     if command.startswith("search "):
         search_str = command[7:]
-        print('https://www.googleapis.com/youtube/v3/search?part=snippet%2CcontentDetails%2Cstatus&order=Relevance&q='+search_str+'&type=video&key=AIzaSyD7CsWp3uxChY6fpJzBf1fFlj4r7W6Wk9o')
+        print('https://www.googleapis.com/youtube/v3/search?part=snippet&order=Relevance&q='+search_str+'&type=video&key=AIzaSyD7CsWp3uxChY6fpJzBf1fFlj4r7W6Wk9o')
 
         inp = urllib.urlopen(r'https://www.googleapis.com/youtube/v3/search?part=snippet%2CcontentDetails%2Cstatus&order=Relevance&q='+search_str+'&type=video&key=AIzaSyD7CsWp3uxChY6fpJzBf1fFlj4r7W6Wk9o')
         resp = json.load(inp)
