@@ -48,15 +48,20 @@ def handle_command(command, channel):
         returns back what it needs for clarification.
     """
 
-    if command in names.keys():
-        inp = urllib.urlopen(r'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet%2CcontentDetails%2Cstatus&maxResults=50&playlistId='+playlist[names[command]]+'&key=AIzaSyD7CsWp3uxChY6fpJzBf1fFlj4r7W6Wk9o')
+    if command.startswith("search "):
+        search_str = command[7:]
+        inp = urllib.urlopen(r'https://www.googleapis.com/youtube/v3/search?part=snippet%2CcontentDetails%2Cstatus&order=Relevance&q='+search_str+'&type=video&key=AIzaSyD7CsWp3uxChY6fpJzBf1fFlj4r7W6Wk9o'
+        resp = json.load(inp)
+        inp.close()        
+
+    elif command in names.keys():
+        inp = urllib.urlopen(r'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=1&playlistId='+playlist[names[command]]+'&key=AIzaSyD7CsWp3uxChY6fpJzBf1fFlj4r7W6Wk9o')
         resp = json.load(inp)
         inp.close()
 
-        items = resp['items']
+        item = resp['items'][0]
 
-        rnd =  random.randint(0,len(items))
-        response = "https://www.youtube.com/watch?v=" +  items[rnd]["contentDetails"]["videoId"]
+        response = "https://www.youtube.com/watch?v=" +  item["id"]["videoId"]
 
 
     elif command == random_song:
