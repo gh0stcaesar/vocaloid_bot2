@@ -14,13 +14,24 @@ import urllib, json
 #playlists
 playlist = {}
 playlist["orangestar"] = "PLOXWDQbF5nQtflxUaCjx8w4VhpzPEAwHA"
-playlist["pinnochioP"]= "PLSf-HCzj7cOvFosWKZdPJBTXw9iBfBp95"
+playlist["pinocchioP"]= "PLSf-HCzj7cOvFosWKZdPJBTXw9iBfBp95"
 playlist["deco*27"] = "PL6c6sPNdnX_UjsnvrQ_fssRHcon05f0Xd"
 playlist["nbuna"] = "PL1oNojz8YMGHI9HMU48hNI2uhWzGYIdqw"
+playlist["40mp"] = "PLtJnHhA9MVicF2uRb7zfOqX34cBpCCdXE"
 
 
 BOT_ID = "U3NGTJX2P"
 
+names = {}
+names["orangestar"] = "orangestar"
+names["pinocchioP"]= "pinocchioP"
+names["deco*27"] = "deco*27"
+names["nbuna"] = "nbuna"
+names["40mp"] = "40mp"
+
+names["os"] = "orangestar"
+names["deco"] = "deco*27"
+names["pino"] = "pinocchioP"
 
 # constants
 AT_BOT = "<@" + BOT_ID + ">"
@@ -37,8 +48,8 @@ def handle_command(command, channel):
         returns back what it needs for clarification.
     """
 
-    if command in playlist.keys():
-        inp = urllib.urlopen(r'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet%2CcontentDetails%2Cstatus&maxResults=50&playlistId='+playlist[command]+'&key=AIzaSyD7CsWp3uxChY6fpJzBf1fFlj4r7W6Wk9o')
+    if command in names.keys():
+        inp = urllib.urlopen(r'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet%2CcontentDetails%2Cstatus&maxResults=50&playlistId='+playlist[names[command]]+'&key=AIzaSyD7CsWp3uxChY6fpJzBf1fFlj4r7W6Wk9o')
         resp = json.load(inp)
         inp.close()
 
