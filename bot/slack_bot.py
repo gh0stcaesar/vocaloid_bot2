@@ -27,7 +27,7 @@ AT_BOT = "<@" + BOT_ID + ">"
 random_song = "song"
 
 # instantiate Slack & Twilio clients
-print SLACK_TOKEN
+SLACK_TOKEN = os.getenv("SLACK_TOKEN", "")
 slack_client = SlackClient(SLACK_TOKEN)
 
 def handle_command(command, channel):
