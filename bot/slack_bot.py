@@ -9,7 +9,7 @@ from beepboop import resourcer
 from beepboop import bot_manager
 
 import urllib, json
-import urllib.parse
+import urlparse
 
 
 #playlists
@@ -53,7 +53,7 @@ def handle_command(command, channel):
         search_str = command[7:]
 
 
-        search_str = urllib.parse.quote(search_str)
+        search_str = urlparse.quote(search_str)
 
         
         inp = urllib.urlopen(r'https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=1&order=Relevance&q='+search_str+'&type=video&key=AIzaSyD7CsWp3uxChY6fpJzBf1fFlj4r7W6Wk9o')
