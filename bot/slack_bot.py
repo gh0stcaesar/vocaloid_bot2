@@ -52,11 +52,8 @@ def handle_command(command, channel):
     if command.startswith("search "):
         search_str = command[7:]
 
-
-        search_str = urlparse.quote(search_str)
-
-        
-        inp = urllib.urlopen(r'https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=1&order=Relevance&q='+search_str+'&type=video&key=AIzaSyD7CsWp3uxChY6fpJzBf1fFlj4r7W6Wk9o')
+        url = u'https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=1&order=Relevance&q='+search_str+'&type=video&key=AIzaSyD7CsWp3uxChY6fpJzBf1fFlj4r7W6Wk9o'        
+        inp = urllib.urlopen(url.encode("UTF-8"))
         resp = json.load(inp)
         inp.close()
 
