@@ -52,16 +52,23 @@ def handle_command(command, channel):
         search_str = command[7:]
         inp = urllib.urlopen(r'https://www.googleapis.com/youtube/v3/search?part=snippet%2CcontentDetails%2Cstatus&order=Relevance&q='+search_str+'&type=video&key=AIzaSyD7CsWp3uxChY6fpJzBf1fFlj4r7W6Wk9o')
         resp = json.load(inp)
-        inp.close()        
+        inp.close()
+
+        item = resp['items'][0]
+
+        response = "https://www.youtube.com/watch?v=" +  item["id"]["videoId"]
 
     elif command in names.keys():
         inp = urllib.urlopen(r'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=1&playlistId='+playlist[names[command]]+'&key=AIzaSyD7CsWp3uxChY6fpJzBf1fFlj4r7W6Wk9o')
         resp = json.load(inp)
         inp.close()
 
-        item = resp['items'][0]
 
-        response = "https://www.youtube.com/watch?v=" +  item["id"]["videoId"]
+        items = resp['items']
+
+        rnd =  random.randint(0,len(items))
+        response = "https://www.youtube.com/watch?v=" +  items[rnd]["contentDetails"]["videoId"]
+
 
 
     elif command == random_song:
