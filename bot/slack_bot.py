@@ -19,6 +19,8 @@ playlist["pinocchioP"]= "PLSf-HCzj7cOvFosWKZdPJBTXw9iBfBp95"
 playlist["deco*27"] = "PL6c6sPNdnX_UjsnvrQ_fssRHcon05f0Xd"
 playlist["nbuna"] = "PL1oNojz8YMGHI9HMU48hNI2uhWzGYIdqw"
 playlist["40mp"] = "PLtJnHhA9MVicF2uRb7zfOqX34cBpCCdXE"
+#playlist["jin"] = "PL9C906E72BDEB7F13"  #unofficial
+#playlist{"classics"] = 
 
 
 BOT_ID = "U3NGTJX2P"
@@ -29,6 +31,7 @@ names["pinocchioP"]= "pinocchioP"
 names["deco*27"] = "deco*27"
 names["nbuna"] = "nbuna"
 names["40mp"] = "40mp"
+#names["jin"] = "jin"
 
 names["os"] = "orangestar"
 names["deco"] = "deco*27"
@@ -50,7 +53,7 @@ def handle_command(command, channel):
     """
 
     if command.startswith("search "):
-        search_str = command[7:]
+        search_str = command[7:] + " vocaloid"
 
         url = u'https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=1&order=Relevance&q='+search_str+'&type=video&key=AIzaSyD7CsWp3uxChY6fpJzBf1fFlj4r7W6Wk9o'        
         inp = urllib.urlopen(url.encode("UTF-8"))
