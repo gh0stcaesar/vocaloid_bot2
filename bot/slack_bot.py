@@ -11,6 +11,7 @@ from beepboop import bot_manager
 import urllib, json
 import urlparse
 
+#http://api.search.nicovideo.jp/api/v2/video/contents/search?q=VOCALOID&targets=tags&fields=title,tags&filters[viewCounter][gte]=1000000&filters[categoryTags][0]=VOCALOID&_sort=-viewCounter&_limit=100&_offset=0
 
 #playlists
 playlist = {}
@@ -19,6 +20,7 @@ playlist["pinocchioP"]= "PLSf-HCzj7cOvFosWKZdPJBTXw9iBfBp95"
 playlist["deco*27"] = "PL6c6sPNdnX_UjsnvrQ_fssRHcon05f0Xd"
 playlist["nbuna"] = "PL1oNojz8YMGHI9HMU48hNI2uhWzGYIdqw"
 playlist["40mp"] = "PLtJnHhA9MVicF2uRb7zfOqX34cBpCCdXE"
+playlist["kemu"] = "PLcksgEAZas2S_CMR6dhSdR4UBRdM9HgOt&index=4"
 #playlist["jin"] = "PL9C906E72BDEB7F13"  #unofficial
 #playlist{"classics"] = 
 
@@ -31,6 +33,9 @@ names["pinocchioP"]= "pinocchioP"
 names["deco*27"] = "deco*27"
 names["nbuna"] = "nbuna"
 names["40mp"] = "40mp"
+names["kemu"] = "kemu"
+names["ke-san"] = "kemu"
+names["ke-sanb"] = "kemu"
 #names["jin"] = "jin"
 
 names["os"] = "orangestar"
